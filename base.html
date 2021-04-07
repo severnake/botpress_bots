@@ -1,0 +1,299 @@
+{% load static %}
+{% load humanize %}
+{% load bootstrap4 %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <meta name="google-site-verification" content="R9FZxetlz6jteXWbhxQDPrFpAnzErC3Bt9wjQtQfNlQ" />
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="icon" href="/media/main_icon.png">
+    <script src="https://kit.fontawesome.com/2f18b7f943.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap" rel="stylesheet">
+    <link href="{% static 'css/dark-mode-toggle.css' %}" rel="stylesheet">
+    <!-- Get css icons from css.gg -->
+    <link href="https://css.gg/css?=|moon|sun" rel="stylesheet">
+    <!-- CSS for dark mode toggle button -->
+    <link href="dark-mode-toggle.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.16/darkreader.min.js"></script>
+<style>
+.mobileShow {display: none;}
+
+  /* Smartphone Portrait and Landscape */
+  @media only screen
+    and (min-device-width : 320px)
+    and (max-device-width : 720px){
+      .mobileShow {display: inline;}
+  }
+</style>
+  <title>CR Space</title>
+  {% block css %} {% endblock css %}
+  {% block extrahead %}{% endblock extrahead %}
+  {% block extra_js %}{% endblock extra_js %}
+</head>
+
+<body style="font-family: 'Merriweather', serif;">
+<header class="site-header">
+    <nav class="navbar navbar-expand-sm navbar-light bg-light" style="z-index:0;" >
+      <div class="container">
+        <a class="navbar-brand" href="/crportal/">
+          <img src='/crportal/media/main_icon.png' height="45"> &nbsp;
+        </a>
+        <button class="navbar-toggler navbar-light" type="button" data-toggle="collapse" data-target="#navbarToggle"
+          aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarToggle">
+          <div class="navbar-nav mr-auto">
+            <a class="nav-item nav-link" href="{% url 'calendarapp:calendar' %}" > Events</a>
+	    <a class="nav-item nav-link" href="{% url 'ac_cal' %}"> Academic Calendar </a>
+            <a class="nav-item nav-link" href="{% url 'blog-home' %}"> Blog</a>
+            <a class="nav-item nav-link" href="{% url 'contact-home' %}"> Contacts</a>
+            {% if request.user.is_authenticated %}
+                <div class="dropdown show">
+                  <a class="nav-item nav-link" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  GTeams &#8595
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item" href="{% url 'meeting-create' %}"> Create Meeting </a>
+                  </div>
+                </div>
+            {% else %}
+            {% endif %}
+            {% if request.user.is_authenticated %}
+                {% if request.user.profile.is_cr %}
+                    <div class="dropdown show">
+                      <a class="nav-item nav-link" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      GCR_Tasks &#8595
+                      </a>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="{% url 'calendarapp:event_new' %}"> New Event </a>
+                        <a class="dropdown-item" href="{% url 'cr_requests' %}">Attendance Requests</a>
+                        <a class="dropdown-item" href="{% url 'calendarapp:add_news' %}" > Add News</a>
+                      </div>
+                    </div>
+                {% endif %}
+            {% endif %}
+
+          </div>
+          <!-- Navbar Right Side -->
+          <div class="navbar-nav">
+            {% if request.user.is_authenticated %}
+            <div class="dropdown show">
+              <a class="nav-item nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Profile
+              </a>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+		      <a class="dropdown-item" href="{% url 'profile' %}" ><img class="w-5" src="{{ user.profile.image.url }}" alt="Zoro" style="width:30px;">{{user.username}}  Profile</a>
+                  <a class="dropdown-item" href="{% url 'profile_detail' request.user.username%}">Academic Profile</a>
+            	  <a class="dropdown-item" href="{% url 'syllabus' %}">Syllabus Book</a>
+                  <a class="dropdown-item" href="{% url 'account_settings' %}">Settings</a>
+                  <a class="dropdown-item" href="{% url 'account_password' %}">Change Password</a>
+                  <small class="dropdown-item">Last Login: {{request.user.last_login}} IST</small>
+                  <small class="dropdown-item">Users Online : {{ request.online_now |length }}</small>
+                  <a class="dropdown-item text-danger" href="{% url 'account_logout' %}">Logout</a>
+              </div>
+            </div>
+          </div>
+            {% else %}
+            <a class="nav-item nav-link" href="{% url 'account_login' %}"> LogIn </a>
+            <a class="nav-item nav-link" href="{% url 'account_signup' %}"> SignUp </a>
+            {% endif%}
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+      <!-- Dark mode toggle button -->
+    <div class="dark-mode-toggle">
+        <!-- icon from css.gg -->
+        <i class="gg-moon"></i>
+    </div>
+  {% if request.user.is_authenticated %}
+    <div class="text-center" style="position: relative;align-items: center;display: flex;justify-content: center;left: 10px;top: 200px;height: 100%;width: 100%; z-index:-1;">
+        <p style="position: sticky;color: rgba(0, 0, 0, 0.2);font-size: rem;font-weight: bold;transform: rotate(-45deg);user-select: none;">
+	    <img src='/media/main_icon.png' height="15" style=" filter: grayscale(60%) "> &nbsp;
+            un{{request.user.username}}
+        </p>
+    </div>
+    {% endif %}
+  <main role="main" class="container" style="z-index:1;">
+	  <br>
+        <p>
+	 <div class="mobileShow">
+            <a class="btn btn-light shadow" data-toggle="collapse" href="#coll" role="button" aria-expanded="false" aria-controls="coll">
+                QR Scanner &nbsp;<sup class="badge badge-primary">beta</sup>
+            </a>
+	 </div>
+        </p>
+        <div class="collapse" id="coll">
+            <div style="width: 500px" id="reader"></div>
+        </div>
+        <br>
+        <div id='messages'>
+          {% include 'user/messages.html' %}
+        </div>
+        <div style='display: grid;
+            text-align: center;'>
+            {{main_calendar|safe}}
+        </div>
+        {% block auth %}
+        {% endblock %}
+        {% block  postman_menu %}
+        {% endblock %}
+        {% block content %}
+        {% endblock content %}
+    </main>
+    {% include 'user/footer.html' %}
+    {% include 'user/scripts.html' %}
+    {% include 'user/cam.html' %}
+  <br><br><br>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+  </script>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  {% block javascript %}
+  {% endblock %}
+
+    <script src="http://192.168.201.214/assets/modules/channel-web/inject.js"></script>
+   <!-- <script>
+	     window.botpressWebChat.init({ host: 'http://192.168.201.214/', botId: 'bot1',extraStylesheet:"http://192.168.201.214/assets/modules/channel-web/infra-style.css" });
+function invoke_botpress(){ window.botpressWebChat.sendEvent({type:'show'});}
+   </script>-->
+   <button id='show-bp' class="btn btn-light" style="position:fixed;bottom:40px;right:40px;"><img src='https://gitam.edu/assets/images/about/logos/gitam-logo1.jpg' height=40px width=40px style="border-radius:30px"></button>
+    <script>
+	    window.botpressWebChat.init({host:'http://192.168.201.214/',botId:'bot1',extraStylesheet:"http://192.168.201.214/assets/modules/channel-web/infra-style.css", enableTranscriptDownload:false,hideWidget:true});
+  document.getElementById('show-bp').addEventListener('click', () => {
+	  window.botpressWebChat.sendEvent({type:'show'});
+    //window.botpressWebChat.sendEvent({ type: 'message',text:'Hello' });
+  })
+</script>
+    <script>
+        function onScanSuccess(qrCodeMessage) {
+            if(qrCodeMessage.slice(0,11)=="http://zoro"){
+            window.location.replace(qrCodeMessage);
+            }
+            else{
+                alert("sorry! domain is not supported!");
+            }
+        }
+
+        function onScanError(errorMessage) {
+            // handle on error condition, with error message
+        }
+
+        var html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", { fps: 10, qrbox: 250 });
+        html5QrcodeScanner.render(onScanSuccess, onScanError);
+        // function to toggle dark mode
+        // turn on if newState is "on", otherwise, turn off dark mode
+        function toggleDarkMode(newState) {
+            // style element to insert into the page when dark mode is enabled
+            // (fixes the logo color to be white in dark mode)
+            var darkModeModification = `<style class='dark-mode-mod'>
+                    .navbar-brand img,
+                    .footer-widget img {
+                        filter: invert(1);
+                    }
+                </style>`;
+            // turning on dark mode
+            if (newState == "on") {
+                // enable dark mode using the DarkReader API
+                DarkReader.enable({ contrast: 150 });
+                // set the toggle button to have the sun icon
+                document.querySelector("div.dark-mode-toggle").firstElementChild.className = "gg-sun";
+                // insert style element to apply some minor adjustments
+                document.head.insertAdjacentHTML("beforeend", darkModeModification);
+                // set cookie so that preference will be remembered
+                setCookie("darkmode", "on", 9999);
+            }
+            // turning off dark mode
+            else {
+                // disable dark mode using the DarkReader API
+                DarkReader.disable();
+                // set the toggle button to have the moon icon
+                document.querySelector("div.dark-mode-toggle").firstElementChild.className = "gg-moon";
+                // find the style element with the modifications
+                var cssMod = document.querySelector(".dark-mode-mod");
+                // if the style element is on the page
+                if (cssMod) {
+                    // remove the style element
+                    cssMod.parentElement.removeChild(cssMod);
+                }
+                // set cookie so that preference will be remembered
+                setCookie("darkmode", "off", 9999);
+            }
+        }
+
+        // add an event listener to detect clicking on the dark mode toggle button
+        document.querySelector("div.dark-mode-toggle").addEventListener("click", function () {
+            // if there is an element with the class "darkreader" on the page (DarkReader is enabled)
+            if (document.querySelector(".darkreader")) {
+                // turn off dark mode
+                toggleDarkMode("off");
+            }
+            else {
+                // turn on dark mode
+                toggleDarkMode("on");
+            }
+        }, false);
+
+        // code from w3schools to set a cookie (https://www.w3schools.com/js/js_cookies.asp)
+        // parameters: name of the cookie, value to set, number of days until it expires
+        function setCookie(cname, cvalue, exdays) {
+            var d = new Date();
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+            var expires = "expires=" + d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+
+        // code from w3schools to get the value of a cookie (https://www.w3schools.com/js/js_cookies.asp)
+        // parameters: name of the cookie
+        function getCookie(cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        // when the page loads, toggle dark mode according to the cookie settings
+        window.addEventListener("load", function () {
+            // get the dark mode cookie value
+            var darkModeCookie = getCookie("darkmode");
+            // if the cookie is set to "on", turn on dark mode
+            if (darkModeCookie == "on") {
+                // toggle dark mode
+                toggleDarkMode(darkModeCookie);
+            }
+        }, false);
+    </script>
+</body>
+</html>
+
